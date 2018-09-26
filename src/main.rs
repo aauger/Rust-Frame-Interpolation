@@ -5,13 +5,13 @@ use std::path::Path;
 
 fn main() {
 
-    let threshold :u8 = 255;
-    let infolder : String = String::from("..\\fstore\\inf\\");
-    let outfolder : String = String::from("..\\fstore\\outf\\");
+    let threshold: u8 = 255;
+    let infolder: String = String::from("..\\fstore\\inf\\");
+    let outfolder: String = String::from("..\\fstore\\outf\\");
 
-    let mut rframecount : u64 = 1;
-    let mut oframecount : u64 = 1;
-    println!("{:?}", std::env::current_dir().unwrap());
+    let mut rframecount: u64 = 1;
+    let mut oframecount: u64 = 1;
+    println!("{:?}", std::env::current_dir().unwrap()); //FIXME
     let fcount = std::fs::read_dir(Path::new(&infolder)).unwrap().count(); //FIXME
     println!("count: {}", fcount);
 
