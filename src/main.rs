@@ -21,24 +21,24 @@ fn main() {
     println!("count: {}", fcount);
 
     for _ in 0..fcount-1 {
-//        let mut fp = frame_pair::FramePair::new(
-//            String::from(format!("{}{}.png", infolder, rframecount)),
-//            String::from(format!("{}{}.png", infolder, rframecount+1))
-//        );
-//        fp.generate_iframe(threshold);
-//        fp.save_aframe(Path::new
-//            (&String::from(format!("{}{}.png", outfolder, oframecount))));
-//        fp.save_iframe(Path::new
-//            (&String::from(format!("{}{}.png", outfolder, oframecount+1))));
-//        oframecount += 2;
-//        rframecount += 1;
-//        println!("{}/{}", oframecount, fcount*2);
-
         if let Ok(mut fp) = FramePair::new(
-            String::from(format!("{}{}.png", infolder, rframecount)),
-            String::from(format!("{}{}.png", infolder, rframecount+1))
+            format!("{}{}.png", infolder, rframecount),
+            format!("{}{}.png", infolder, rframecount+1)
         ) {
             fp.generate_iframe(threshold);
+
+            match fp.save_aframe(Path::new(&format!("{}{}.png", outfolder, oframecount))) {
+                Err(_e) => panic!("Error saving A frame"),
+                _ => ()
+            }
+
+            match fp.save_iframe(Path::new(&format!("{}{}.png", outfolder, oframecount+1))) {
+                Err (_e) => panic!("Error saving I frame"),
+                _ => ()
+            }
         };
+
+        oframecount += 2;
+        rframecount += 1;
     }
 }
