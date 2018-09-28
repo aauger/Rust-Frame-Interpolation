@@ -9,6 +9,7 @@ fn main() {
     //TODO: these ought to be user provided arguments
     //Perhaps via a conf file, for mo-vec settings later?
     let threshold: u8 = 255;
+    let distance: i32 = 10;
     let infolder: String = String::from("..\\fstore\\inf\\");
     let outfolder: String = String::from("..\\fstore\\outf\\");
 
@@ -25,7 +26,7 @@ fn main() {
             format!("{}{}.png", infolder, rframecount),
             format!("{}{}.png", infolder, rframecount+1)
         ) {
-            fp.generate_iframe(threshold);
+            fp.generate_iframe(threshold, distance);
 
             match fp.save_aframe(Path::new(&format!("{}{}.png", outfolder, oframecount))) {
                 Err(_e) => panic!("Error saving A frame"),
@@ -37,7 +38,7 @@ fn main() {
                 _ => ()
             }
 
-            println!("{}/{}", oframecount, count*2);
+            println!("{}/{}", oframecount, fcount*2);
         };
 
         oframecount += 2;
