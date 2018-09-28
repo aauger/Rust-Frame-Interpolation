@@ -36,6 +36,8 @@ fn main() {
                 Err (_e) => panic!("Error saving I frame"),
                 _ => ()
             }
+
+            println!("{}/{}", oframecount, count*2);
         };
 
         oframecount += 2;
