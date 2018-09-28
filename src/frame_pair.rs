@@ -1,11 +1,11 @@
 extern crate image;
 use std::path::Path;
 use image::GenericImageView;
+use image::ImageError;
 use image::Rgba;
 use std::io;
 
-fn blend(a: u8, b: u8, thres: u8) -> u8
-{
+fn blend(a: u8, b: u8, thres: u8) -> u8 {
     let ia: i32 = a as i32;
     let ib: i32 = b as i32;
     let diff = (ia-ib).wrapping_abs();
@@ -24,17 +24,15 @@ pub struct FramePair {
 }
 
 impl FramePair {
-    pub fn new(fna: String, fnb: String) -> Self
-    {
-        let ima = image::open(Path::new(&fna)).unwrap(); //FIXME
-        let imb = image::open(Path::new(&fnb)).unwrap(); //FIXME
+    pub fn new(fna: String, fnb: String) -> Result<Self, ImageError> {
+        let ima = image::open(Path::new(&fna))?;
+        let imb = image::open(Path::new(&fnb))?;
         let iout = image::ImageBuffer::new(ima.width(), ima.height());
 
-        FramePair { a: ima, b: imb, out: iout }
+        Ok(FramePair { a: ima, b: imb, out: iout })
     }
 
-    pub fn generate_iframe(&mut self, thres : u8)
-    {
+    pub fn generate_iframe(&mut self, thres : u8) {
         let (w,h) = self.a.dimensions();
 
         for x in 0..w {
