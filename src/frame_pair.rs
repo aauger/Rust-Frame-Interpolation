@@ -55,10 +55,9 @@ impl FramePair {
         for x in 0..w {
             for y in 0..h {
                 let a_color: Rgba<u8> = self.a.get_pixel(x, y);
-                let mut nearest: Rgba<u8> = self.b.get_pixel(x,y);
+                let mut nearest: Rgba<u8> = invert(a_color);
                 self.out.put_pixel(x,y,nearest);
-                let mut xloc: u32 = x;
-                let mut yloc: u32 = y;
+                let mut loc = (x,y);
 
                 for xoff in -dist..dist {
                     for yoff in -dist..dist {
@@ -75,14 +74,14 @@ impl FramePair {
 
                         if (distance(a_color, b_color) < distance(a_color, nearest)) {
                             nearest = b_color;
-                            xloc = xf as u32;
-                            yloc = yf as u32;
+                            loc.0 = xf as u32;
+                            loc.1 = yf as u32;
                         }
                     }
                 }
 
-                let mpx = (x + xloc)/2;
-                let mpy = (y + yloc)/2;
+                let mpx = (x + loc.0)/2;
+                let mpy = (y + loc.1)/2;
 
                 self.out.put_pixel(mpx, mpy,
                 Rgba([
