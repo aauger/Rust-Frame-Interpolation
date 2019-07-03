@@ -11,8 +11,8 @@ fn main() {
     //TODO: these ought to be user provided arguments
     //Perhaps via a conf file, for mo-vec settings later?
     let threshold: u8 = 255;
-    let distance: i32 = 5;
-    let block_size: i32 = 16;
+    let distance: i32 = 2;
+    let block_size: i32 = 2;
     let infolder: String = String::from("fstore\\inf\\");
     let outfolder: String = String::from("fstore\\outf\\");
     let mut rframecount: u64 = 1;

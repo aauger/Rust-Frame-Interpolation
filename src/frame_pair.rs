@@ -71,8 +71,8 @@ impl FramePair {
 //            }
 //        }
 
-        for x in 0..(self.a.width()/(self.blkSize as u32)) {
-            for y in 0..(self.a.height()/(self.blkSize as u32)) {
+        for x in 0..(width/self.blkSize) {
+            for y in 0..(height/self.blkSize) {
                 let xi : i32 = x as i32;
                 let yi : i32 = y as i32;
                 blocks.push(Block::new(xi*self.blkSize, yi*self.blkSize, self.blkSize, self.blkSize));
@@ -104,7 +104,7 @@ impl FramePair {
                             let uy = y as u32;
                             let fx = (x + x_off) as u32;
                             let fy = (y + y_off) as u32;
-                            
+
                             //println!("{} {} {} {}", ux, uy, fx, fy);
 
                             let colA : Rgba<u8> = self.a.get_pixel(ux, uy);
@@ -131,27 +131,54 @@ impl FramePair {
 
                     if (ox + x < 0 || ox + x > width-1) { continue; }
                     if (nx + x < 0 || nx + x > width-1) { continue; }
+                    if (bx + x < 0 || bx + x > width-1) { continue; }
 
                     if (oy + y < 0 || oy + y > height-1) { continue; }
                     if (ny + y < 0 || ny + y > height-1) { continue; }
+                    if (by + y < 0 || by + y > height-1) { continue; }
 
                     //if (nx_origin + x < 0 || nx_origin + x > width-1) { continue; }
                     //if (ny_origin + y < 0 || ny_origin + y > height-1) { continue; }
 
                     //let colA : Rgba<u8> = self.a.get_pixel( ((ox + x) as u32), ((oy + y) as u32) );
-                    let colB : Rgba<u8> = self.b.get_pixel( ((nx + x) as u32), ((ny + y) as u32) );
+                    //let colB : Rgba<u8> = self.b.get_pixel( ((nx + x) as u32), ((ny + y) as u32) );
+                    //let colC : Rgba<u8> = self.b.get_pixel( ((bx + x) as u32), ((by + y) as u32) );
 
+                    let colA : Rgba<u8> = self.a.get_pixel( ((nx + x) as u32), ((ny + y) as u32) );
+                    let colC : Rgba<u8> = self.b.get_pixel( ((nx + x) as u32), ((ny + y) as u32) );
 
-                    self.out.put_pixel(
-                        (ox+x) as u32,
-                        (oy+y) as u32,
+                    let acMid = Rgba([
+                        blend(colA.data[0], colC.data[0], 255),
+                        blend(colA.data[1], colC.data[1], 255),
+                        blend(colA.data[2], colC.data[2], 255),
+                        blend(colA.data[3], colC.data[3], 255)
+                    ]);
+
+                    if(smallest_difference.unwrap() > self.blkSize*self.blkSize*(b.max_difference()/2)) {
+                        self.out.put_pixel(
+                            (ox+x) as u32,
+                            (oy+y) as u32,
 //                        Rgba([
-//                            blend(colA.data[0], colB.data[0], 255),
-//                            blend(colA.data[1], colB.data[1], 255),
-//                            blend(colA.data[2], colB.data[2], 255),
-//                            blend(colA.data[3], colB.data[3], 255)
+//                            blend(colC.data[0], colA.data[0], 255),
+//                            blend(colC.data[1], colA.data[1], 255),
+//                            blend(colC.data[2], colA.data[2], 255),
+//                            blend(colC.data[3], colA.data[3], 255)
 //                        ]));
-                        colB);
+//                        Rgba([
+//                            (bx*42) as u8,
+//                            (by*42) as u8,
+//                            0u8,
+//                            255u8
+//                        ]));
+                            colC);
+                    } else {
+                        self.out.put_pixel(
+                            (ox+x) as u32,
+                            (oy+y) as u32,
+                            self.b.get_pixel((bx+x) as u32, (by+y) as u32)
+                        );
+                    }
+
                 }
             }
         }
